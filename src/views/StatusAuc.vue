@@ -7,30 +7,55 @@
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-blue-100">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               WBS
             </th>
-            <th v-for="status in statuses" :key="status"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              v-for="status in statuses"
+              :key="status"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               {{ status }}
             </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Total
+            </th>
+            <th
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              F4 %
             </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="(counts, description, wbsCode) in groupedData" :key="description">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+          <tr v-for="(counts, description) in groupedData" :key="description">
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+            >
               {{ description }}
             </td>
-            <td v-for="status in statuses" :key="status"
+            <td
+              v-for="status in statuses"
+              :key="status"
               class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 cursor-pointer"
-              @click="showModal(description, status)">
+              @click="showModal(description, status)"
+            >
               {{ counts.statusCounts[status] || 0 }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               {{ counts.total }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {{
+                (
+                  ((counts.statusCounts["F4"] || 0) / counts.total) *
+                  100
+                ).toFixed(2)
+              }}%
             </td>
           </tr>
         </tbody>
@@ -39,9 +64,15 @@
   </div>
 
   <!-- Modal -->
-  <div v-if="isModalVisible" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
-    @click.self="closeModal">
-    <div class="relative top-1/4 mx-auto p-5 border w-auto shadow-lg rounded-md bg-white" style="max-width: 90%">
+  <div
+    v-if="isModalVisible"
+    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
+    @click.self="closeModal"
+  >
+    <div
+      class="relative top-1/4 mx-auto p-5 border w-auto shadow-lg rounded-md bg-white"
+      style="max-width: 90%"
+    >
       <div class="mt-3 text-center">
         <div class="mt-4 text-left">
           <!-- Iterate through descriptions and prepend the WBS to each -->
@@ -49,8 +80,10 @@
             {{ desc }}
           </p>
         </div>
-        <span class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 mt-4"
-          @click="closeModal">
+        <span
+          class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 mt-4"
+          @click="closeModal"
+        >
           Close
         </span>
       </div>
@@ -71,7 +104,6 @@ const error = ref(null);
 const statuses = ["A0", "B2", "C1", "C3", "C9", "D1", "D2", "E2", "F2", "F4"];
 const isModalVisible = ref(false);
 const currentDescriptions = ref([]);
-const currentWBSDescription = ref("");
 
 onMounted(async () => {
   loading.value = true;
@@ -99,7 +131,7 @@ function processGroupedData() {
       map[descriptionKey] = { descriptions: {}, total: 0, statusCounts: {} };
       statuses.forEach((status) => {
         map[descriptionKey].statusCounts[status] = 0;
-        map[descriptionKey].descriptions[status] = new Set();  // Set to hold combined descriptions
+        map[descriptionKey].descriptions[status] = new Set(); // Set to hold combined descriptions
       });
     }
 
@@ -117,14 +149,11 @@ function processGroupedData() {
   groupedData.value = map;
 }
 
-
-
 function showModal(description, status) {
-  currentDescriptions.value = groupedData.value[description].descriptions[status];
+  currentDescriptions.value =
+    groupedData.value[description].descriptions[status];
   isModalVisible.value = true;
 }
-
-
 
 function closeModal() {
   isModalVisible.value = false;

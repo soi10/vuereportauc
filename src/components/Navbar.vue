@@ -27,5 +27,6 @@ import { ref } from "vue";
 const menuItems = ref([
   { text: "Home", href: "/" },
   { text: "Status", href: "/statusauc" },
+  { text: "AllData", href: "/alldata" },
 ]);
 </script>
